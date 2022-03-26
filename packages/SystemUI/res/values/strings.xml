@@ -3396,4 +3396,7 @@
         <item quantity="other">%d devices connected</item>
     </plurals>
 
+    <!-- Statusbar Icons -->
+    <string name="status_bar_data_saver">Data saver</string>
+
 </resources>
