@@ -35,12 +35,6 @@ public class PixelPropsUtils {
     private static final String DEVICE = "ro.product.device";
     private static final boolean DEBUG = false;
 
-    private static final String SPOOF_PIXEL_GAPPS = "persist.sys.pixelprops.gapps";
-    private static final String SPOOF_PIXEL_GMS = "persist.sys.pixelprops.gms";
-    private static final String SPOOF_PIXEL_GAMES = "persist.sys.pixelprops.games";
-    private static final String SPOOF_PIXEL_GPHOTOS = "persist.sys.pixelprops.gphotos";
-    private static final String SPOOF_PIXEL_NETFLIX = "persist.sys.pixelprops.netflix";
-
     private static final Map<String, Object> propsToChangeGeneric;
     private static final Map<String, Object> propsToChangePixel5a;
     private static final Map<String, Object> propsToChangePixel8Pro;
@@ -63,7 +57,6 @@ public class PixelPropsUtils {
             "com.google.android.apps.emojiwallpaper",
             "com.google.android.apps.nexuslauncher",
             "com.google.android.apps.privacy.wildlife",
-            "com.google.android.apps.wallpaper",
             "com.google.android.apps.wallpaper.pixel",
             "com.google.android.apps.photos",
             "com.google.android.gms.ui",
@@ -99,6 +92,7 @@ public class PixelPropsUtils {
             "com.google.android.apps.tachyon",
             "com.google.android.apps.tips",
             "com.google.android.apps.tycho",
+            "com.google.android.apps.wallpaper",
             "com.google.android.apps.wearables.maestro.companion",
             "com.google.android.apps.youtube.kids",
             "com.google.android.apps.youtube.music",
@@ -257,9 +251,6 @@ public class PixelPropsUtils {
                 || Arrays.asList(packagesToChangePixel8Pro).contains(packageName)
                 || Arrays.asList(packagesToChangePixel5a).contains(packageName)) {
 
-            if (!SystemProperties.getBoolean(SPOOF_PIXEL_GAPPS, true))
-                return;
-
             if (Arrays.asList(packagesToKeep).contains(packageName) ||
                     packageName.startsWith("com.google.android.GoogleCamera")) {
                 sIsExcluded = true;
@@ -269,15 +260,10 @@ public class PixelPropsUtils {
             Map<String, Object> propsToChange = new HashMap<>();
 
             if (packageName.equals("com.google.android.apps.photos")) {
-                if (SystemProperties.getBoolean(SPOOF_PIXEL_GPHOTOS, true)) {
                     propsToChange.putAll(propsToChangePixelXL);
-                }
-            } else if (packageName.equals("com.netflix.mediaclient") && 
-                        !SystemProperties.getBoolean(SPOOF_PIXEL_NETFLIX, false)) {
-                    if (DEBUG) Log.d(TAG, "Netflix spoofing disabled by system prop");
-                    return;
-            } else if (packageName.equals("com.android.vending") &&
-                    SystemProperties.getBoolean(SPOOF_PIXEL_GMS, true)) {
+            } else if (packageName.equals("com.netflix.mediaclient")) {
+                    propsToChange.putAll(propsToChangePixel5a);
+            } else if (packageName.equals("com.android.vending")) {
                 sIsFinsky = true;
                 return;
             } else if (Arrays.asList(packagesToChangePixel8Pro).contains(packageName)) {
@@ -297,8 +283,7 @@ public class PixelPropsUtils {
                 if (DEBUG) Log.d(TAG, "Defining " + key + " prop for: " + packageName);
                 setPropValue(key, value);
             }
-            if (packageName.equals("com.google.android.gms") &&
-                    SystemProperties.getBoolean(SPOOF_PIXEL_GMS, true)) {
+            if (packageName.equals("com.google.android.gms")) {
                 setPropValue("TIME", System.currentTimeMillis());
                 final String processName = Application.getProcessName();
                 if (processName.toLowerCase().contains("unstable")
@@ -312,9 +297,6 @@ public class PixelPropsUtils {
                 setPropValue("FINGERPRINT", Build.VERSION.INCREMENTAL);
             }
         } else {
-
-            if (!SystemProperties.getBoolean(SPOOF_PIXEL_GAMES, false))
-                return;
 
             if (Arrays.asList(packagesToChangeROG6).contains(packageName)) {
                 if (DEBUG) Log.d(TAG, "Defining props for: " + packageName);
@@ -416,12 +398,12 @@ public class PixelPropsUtils {
         // Alter build parameters to avoid hardware attestation enforcement
         setPropValue("BRAND", "google");
         setPropValue("MANUFACTURER", "Google");
-        setPropValue("DEVICE", "sailfish");
-        setPropValue("ID", "OPM1.171019.011");
-        setPropValue("FINGERPRINT", "google/sailfish/sailfish:8.1.0/OPM1.171019.011/4448085:user/release-keys");
-        setPropValue("MODEL", "Pixel");
-        setPropValue("PRODUCT", "sailfish");
-        setVersionFieldString("SECURITY_PATCH", "2017-12-05");
+        setPropValue("DEVICE", "husky");
+        setPropValue("ID", "AP31.240617.009");
+        setPropValue("FINGERPRINT", "google/husky_beta/husky:15/AP31.240617.009/12094726:user/release-keys");
+        setPropValue("MODEL", "Pixel 8 Pro");
+        setPropValue("PRODUCT", "husky_beta");
+        setVersionFieldString("SECURITY_PATCH", "2024-07-05");
     }
 
     private static boolean isCallerSafetyNet() {
