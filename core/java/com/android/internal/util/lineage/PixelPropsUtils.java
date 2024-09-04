@@ -358,6 +358,18 @@ public class PixelPropsUtils {
         }
     }
 
+    private static void setVersionFieldInt(String key, int value) {
+        try {
+            if (DEBUG) Log.d(TAG, "Defining prop " + key + " to " + value);
+            Field field = Build.VERSION.class.getDeclaredField(key);
+            field.setAccessible(true);
+            field.set(null, value);
+            field.setAccessible(false);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            Log.e(TAG, "Failed to set prop " + key, e);
+        }
+    }
+
     private static void setPropValue(String key, Object value) {
         try {
             if (DEBUG) Log.d(TAG, "Defining prop " + key + " to " + value.toString());
@@ -398,12 +410,16 @@ public class PixelPropsUtils {
         // Alter build parameters to avoid hardware attestation enforcement
         setPropValue("BRAND", "google");
         setPropValue("MANUFACTURER", "Google");
-        setPropValue("DEVICE", "husky");
-        setPropValue("ID", "AP31.240617.009");
-        setPropValue("FINGERPRINT", "google/husky_beta/husky:15/AP31.240617.009/12094726:user/release-keys");
-        setPropValue("MODEL", "Pixel 8 Pro");
-        setPropValue("PRODUCT", "husky_beta");
-        setVersionFieldString("SECURITY_PATCH", "2024-07-05");
+        setPropValue("DEVICE", "caiman");
+        setPropValue("TYPE", "user");
+	setPropValue("TAGS", "release-keys");
+        setPropValue("ID", "AD1A.240530.047.U1");
+        setPropValue("FINGERPRINT", "google/caiman/caiman:14/AD1A.240530.047.U1/12150698:user/release-keys");
+        setPropValue("MODEL", "Pixel 9 Pro");
+        setPropValue("PRODUCT", "caiman");
+        setVersionFieldString("INCREMENTAL", "12150698");
+	setVersionFieldString("SECURITY_PATCH", "2024-08-05");
+	setVersionFieldInt("DEVICE_INITIAL_SDK_INT", 34);
     }
 
     private static boolean isCallerSafetyNet() {
